@@ -1,4 +1,13 @@
 #pragma once
+
+#define _CRT_SECURE_NO_WARNINGS
+#include "event.h"
+#include "termcolor/termcolor.hpp"
+#include <ctime>
+#include <string>
+
+using namespace std;
+
 class calendar
 {
 private:
@@ -7,7 +16,10 @@ private:
 	int calc_leap_year(int year);
 	int get_year();
 	int get_month();
+	int get_day();
+	void show_events(int day,int month,int year);
 public:
 	void calc_core();
+	void menu();
 };
 
