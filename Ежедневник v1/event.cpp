@@ -17,10 +17,9 @@ void event::create_file()
 
 void event::show_event(int year, int month, int day)
 {
-	event tmp;
 	for (int i = 0; i < file_size(this->path); i++) {
-		if ((tmp.get_numb_from_string(this->path, i)) == (tmp.make_time(year, month, day))) {
-			cout << tmp.get_event_string(this->path, i) << "Время события "; tmp.get_hour_min(tmp.get_file_line_n(this->path, i));
+		if ((get_numb_from_string(this->path, i)) == (make_time(year, month, day))) {
+			cout << get_event_string(this->path, i) << "\tвремя события "; get_hour_min(get_file_line_n(this->path, i)); cout << endl;
 		}
 	}
 }
@@ -72,24 +71,10 @@ string event::make_event(string totalTime, string eventName, string eventTime)
 
 void event::get_hour_min(string line)
 {
-	event ev;
-	int h = 0;
+	int h = line.size();
 	string tmp;
 	int time;
-	char  *newChar = new char[line.size()];
-	newChar = {NULL};
-	for (int i = 0; i < line.size(); i++)
-	{
-		int j = 0;
-		if (line[i] == '|') h++;
-		if (h == 1) {
-			newChar[j] = line[i];
-			j++;
-		}
-		if (h == 2) break;
-	}
-	tmp = newChar;
-	time = ev.get_total_time(tmp);
+	time = get_total_time(line.substr(9, 12));
 	cout << time / 100 << ':' << time % 100;
 }
 
@@ -110,16 +95,13 @@ string event::get_file_line_n(string path, size_t lineNum)
 }
 long long event::get_numb_from_string(string path, size_t lineNum)
 {
-	event ev;
 	string tmp = get_file_line_n(this->path, lineNum);
 	char tmpStr[8] = {};
-	string charToStr;
 	int pos = tmp.find("|");
 	for (int i = 0; i < pos; i++) {
 		tmpStr[i] = tmp[i];
 	}
-	charToStr = tmpStr;
-	return get_total_time(charToStr);
+	return get_total_time(tmpStr);
 }
 
 long long event::make_time(long long year, long long month, long long day)
@@ -129,10 +111,10 @@ long long event::make_time(long long year, long long month, long long day)
 
 void event::check_valid_events(int year, int month)
 {
-	if (!is_empty()) {
+	if (empty){
 		return;
 	}
-	clear_empty_lines();
+	//clear_empty_lines();
 	//длина файла j
 	int j = file_size(this->path);
 	vector<string> allEvents;
@@ -162,6 +144,7 @@ void event::check_valid_events(int year, int month)
 	for (int i = 0; i < allEvents.size(); i++) {
 		add_line_in_file(this->path, allEvents[i]);
 	}
+	if (empty);
 }
 
 void event::add_line_in_file(string path, string line)
@@ -181,7 +164,7 @@ int event::file_size(string path)
 		file >> str;
 		lst.push_back(str);
 	}
-	return lst.size();
+	return lst.size() - 1;
 }
 
 
@@ -203,71 +186,15 @@ int event::get_year(long long time)
 
 string event::get_event_string(string path, size_t place)
 {
-	event ev;
-	int h = 0;
+	int h;
 	string tmp;
-	string origin = ev.get_file_line_n(path, place);
-	char* newChar = new char[origin.size()];
-	for (int i = 0; i < origin.size(); i++)
-	{
-		int j = 0;
-		if (origin[i] == '|') h++;
-		if (h == 2) {
-			newChar[j] = origin[i];
-			j++;
-		}
-	}
-	tmp = newChar;
-	return tmp;
+	string origin = get_file_line_n(path, place);
+	h = origin.size();
+	return origin.substr(14, h);
 }
-
-void event::clear_empty_lines()
-{
-	string paths = "C:\\Users\\mrsel\\Desktop\\Tests.txt";
-	ifstream FileInput(path, ifstream::in);
-	ofstream FileOutput(paths, ofstream::out);
-	assert(FileInput);
-	assert(FileOutput);
-
-	string String_Of_File;
-	while (FileInput)
-	{
-		std::getline(FileInput, String_Of_File);
-		if (!String_Of_File.empty())
-		{
-			FileOutput << String_Of_File;
-			FileOutput << std::endl;
-		}
-	}
-	FileInput.close();
-	FileOutput.close();
-
-	ifstream fp1(paths, ifstream::in);//для чтения из первого
-
-	ofstream fp2(path ,ofstream::out);// для записи во второй
-	char cc[256];
-	int j = file_size(paths);
-	vector<string> allEvents;
-	string tmp;
-	long long tmpInt;
-	//j == длина файла
-	for (int i = 0; i < j; i++)
-	{
-		//добавляем линию файла в tmp
-		tmp = get_file_line_n(paths, i);
-		allEvents.push_back(tmp);
-	}
-	for (int i = 0; i < allEvents.size(); i++) {
-		add_line_in_file(this->path, allEvents[i]);
-	}
-	fp1.close();
-	fp2.close();
-}
-
 bool event::check_event(int year, int month, int day)
 {
 	if (is_empty()) return false;
-	clear_empty_lines();
 	ifstream file(this->path);
 	event ev;
 	int j = ev.file_size(this->path);
@@ -290,10 +217,10 @@ bool event::check_event(int year, int month, int day)
 
 bool event::is_empty()
 {
-	fstream f;
-	long file_size;
-	f.seekg(0, ios::end);
-	file_size = f.tellg();
-	if (file_size == 0) return true;
+	ifstream file(path);
+	long fileSize;
+	file.seekg(0, ios::end);
+	fileSize = file.tellg();
+	if (fileSize == 0) return true;
 	else return false;
 }

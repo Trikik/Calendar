@@ -7,7 +7,6 @@
 #include <list>
 #include <fstream>
 #include <sstream>
-
 using namespace std;
 
 class event
@@ -25,8 +24,9 @@ private:
 	int get_month(long long totalTime);
 	int get_year(long long totalTime);
 	string get_event_string(string path, size_t place);
-	void clear_empty_lines();
+	//void clear_empty_lines();
 public:
+	bool empty = NULL;
 	void check_valid_events(int year, int month);
 	string give_time(int totalTime);
 	string path = "C:\\Users\\mrsel\\Desktop\\Test.txt";

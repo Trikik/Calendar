@@ -122,6 +122,14 @@ void calendar::calc_core() {
 void calendar::menu()
 {
 	event ev;
+	ifstream file;
+	file.open(ev.path);
+	file.close();
+	if (!file)
+	{
+		ev.create_file();
+	}
+	ev.empty = ev.is_empty();
 	bool work = true;
 	int choise;
 	do {
@@ -159,7 +167,7 @@ void calendar::menu()
 			}
 			int tmpDay = get_day();
 			cout << "¬ведите день: "; cin >> day; cout << endl;
-			if((day <= tmpDay) || ((day < 0) || (day > 31)) || (days[month - 1] <= day))
+			if(((day < tmpDay)&&(month == tmpMonth)) || ((day < 0) && (day > 31) || (days[month - 1] <= day )))
 			{
 				cout << "ƒень не соответствует данному времени пожалуйста выбирите сегодн€шний день или следующий";
 				system("pause");
@@ -179,20 +187,54 @@ void calendar::menu()
 				system("pause");
 				break;
 			}
-			tmp = ev.make_event(ev.give_time(ev.make_time(year,month,day)),ev.give_time(ev.total_hour_min(hour,min)),eventName);
+			tmp = ev.make_event(ev.give_time(ev.make_time(year,month,day)),eventName,ev.give_time(ev.total_hour_min(hour,min)));
 			ev.add_event(tmp);
 			break;
 		}
 		case 2: {
+			int tmpYear = get_year();
+			int tmpMonth = get_month();
+			int tmpDay = get_day();
+			ev.show_event(tmpYear,tmpMonth,tmpDay);
+			cout << endl;
+			system("pause");
 			break;
 		}
 		case 3: {
-			break;
-		}
-		case 4: {
+			int year;
+			int month;
+			int day;
+			cout << "¬ведите год: "; cin >> year; cout << endl;
+			int tmpYear = get_year();
+			if (year < tmpYear) {
+				cout << "√од не соответствует данному времени пожалуйста выбирите этот год или следующий";
+				system("pause");
+				break;
+			};
+			cout << "¬ведите мес€ц: "; cin >> month; cout << endl;
+			if ((month < 0) || (month > 12)) {
+				cout << "ћес€ц не соответствует данному времени пожалуйста выбирите этот мес€ц или следующий";
+				system("pause");
+				break;
+			}
+			cout << "¬ведите день: "; cin >> day; cout << endl;
+			if (((day < 0) && (day > 31) || (days[month - 1] <= day)))
+			{
+				cout << "ƒень не соответствует данному времени пожалуйста выбирите сегодн€шний день или следующий";
+				system("pause");
+				break;
+			}
+			if (ev.check_event(year, month, day)) {
+				ev.show_event(year, month, day);
+				cout << endl;
+				system("pause");
+			}
+			else cout << "Ќет событий" << endl;
+			system("pause");
 			break;
 		}
 		case 0: {
+			work = false;
 			break;
 		}
 		default: {
@@ -201,4 +243,6 @@ void calendar::menu()
 		}
 		}
 	} while (work);
+	system("CLS");
+	cout << "¬ыключение";
 }
