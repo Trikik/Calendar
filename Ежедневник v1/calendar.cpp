@@ -129,10 +129,10 @@ void calendar::menu()
 	{
 		ev.create_file();
 	}
-	ev.empty = ev.is_empty();
 	bool work = true;
 	int choise;
 	do {
+		ev.empty = ev.is_empty();
 		system("CLS");
 		calc_core();
 		cout << endl;
